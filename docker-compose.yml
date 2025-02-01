@@ -1,0 +1,28 @@
+services:
+  gateway:
+    image: eclipse-temurin:17-jre
+    entrypoint: 'java -jar /app/gateway-0.0.1.jar'
+    ports:
+      - '8080:8080'
+    volumes:
+      - './gateway/build/libs:/app'
+    depends_on:
+      - core
+  core:
+    image: eclipse-temurin:17-jre
+    entrypoint: 'java -jar /app/core-0.0.1.jar'
+    volumes:
+      - './core/build/libs:/app'
+    depends_on:
+      - db
+  db:
+    image: postgres:latest
+    volumes:
+      - 'db-volume:/var/lib/postgresql/data'
+      - './core/src/main/resources/db-schema.sql:/docker-entrypoint-initdb.d/db-schema.sql'
+    environment:
+      POSTGRES_USER: lab
+      POSTGRES_DB: lab
+      POSTGRES_PASSWORD: lab_password
+volumes:
+  db-volume:

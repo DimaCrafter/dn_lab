@@ -5,7 +5,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 public class CoreClient {
-    private static final WebClient core = WebClient.create("http://127.0.0.1:8081");
+    private static final WebClient core = WebClient.create("http://core:8081");
 
     public static Mono<String> request (HttpMethod method, String path) {
         return core.method(method).uri(path).retrieve().bodyToMono(String.class);

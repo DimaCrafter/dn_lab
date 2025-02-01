@@ -10,9 +10,15 @@ import java.util.List;
 
 @RestController
 public class ItemsController {
+    private final Items items;
+
+    public ItemsController (Items items) {
+        this.items = items;
+    }
+
     @GetMapping("/items")
     public final List<Item> getItems () {
-        return Items.getAll();
+        return items.findAll();
     }
 
     @PutMapping("/items")
@@ -21,22 +27,23 @@ public class ItemsController {
         item.name = payload.name();
         item.description = payload.description();
 
-        Items.insert(item);
+        items.save(item);
         return "OK";
     }
 
     @GetMapping("/items/{id}")
     public final Item getItem (@PathVariable int id) {
-        return Items.findById(id);
+        return items.findById(id).orElse(null);
     }
 
     @PatchMapping("/items/{id}")
     public final String updateItem (@PathVariable int id, @RequestBody ItemEditPayload payload) {
-        var item = Items.findById(id);
-        if (item == null) {
+        var itemRes = items.findById(id);
+        if (itemRes.isEmpty()) {
             return "No such item";
         }
 
+        var item = itemRes.get();
         if (payload.name() != null) {
             item.name = payload.name();
         }
@@ -45,13 +52,13 @@ public class ItemsController {
             item.description = payload.description();
         }
 
-        item.save();
+        items.save(item);
         return "OK";
     }
 
     @DeleteMapping("/items/{id}")
     public final String deleteItem (@PathVariable int id) {
-        Items.deleteById(id);
+        items.deleteById(id);
         return "OK";
     }
 }
