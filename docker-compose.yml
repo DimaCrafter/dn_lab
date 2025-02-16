@@ -11,6 +11,8 @@ services:
   core:
     image: eclipse-temurin:17-jre
     entrypoint: 'java -jar /app/core-0.0.1.jar'
+    ports:
+      - '127.0.0.1:8081:8081'
     volumes:
       - './core/build/libs:/app'
     depends_on:
